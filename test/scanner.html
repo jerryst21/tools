@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tes Scanner Barcode</title>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        h2 { color: #333; margin-bottom: 10px; }
+        
+        /* Container Kamera */
+        #reader { 
+            width: 100%; 
+            max-width: 450px; 
+            border-radius: 15px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        /* Panel Hasil */
+        #result-container { 
+            margin-top: 25px; 
+            padding: 20px; 
+            background: white;
+            width: 90%; 
+            max-width: 450px; 
+            border-radius: 12px; 
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            display: none; /* Sembunyi sebelum ada hasil */
+        }
+        .barcode-value { 
+            font-size: 24px; 
+            font-weight: bold; 
+            color: #007bff; 
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:active { transform: scale(0.98); }
+        .status { color: #666; font-size: 14px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+    <h2>Scan Barcode</h2>
+    <p class="status">Arahkan kamera ke barcode/QR Code</p>
+    
+    <div id="reader"></div>
+
+    <div id="result-container" id="resultContainer">
+        <p style="margin: 0; color: #888;">Barcode Terdeteksi:</p>
+        <div class="barcode-value" id="barcode-result">---------</div>
+        <button onclick="restartScanner()">Scan Ulang</button>
+    </div>
+
+    <script>
+        const html5QrCode = new Html5Qrcode("reader");
+        const resultContainer = document.getElementById('result-container');
+        const barcodeDisplay = document.getElementById('barcode-result');
+
+        // Konfigurasi scan (FPS dan ukuran kotak target)
+        const config = { 
+            fps: 15, 
+            qrbox: { width: 280, height: 180 }, // Kotak bidik disesuaikan untuk barcode panjang
+            aspectRatio: 1.0 
+        };
+
+        function startScanner() {
+            html5QrCode.start(
+                { facingMode: "environment" }, // Paksa kamera belakang
+                config,
+                onScanSuccess
+            ).catch(err => {
+                alert("Error: Pastikan izin kamera diberikan dan buka via HTTPS.");
+                console.error(err);
+            });
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Berhenti scan agar tidak mendeteksi berkali-kali dalam satu waktu
+            html5QrCode.stop().then(() => {
+                // Tampilkan hasil di layar
+                barcodeDisplay.innerText = decodedText;
+                resultContainer.style.display = 'block';
+                
+                // Opsional: Getaran HP saat berhasil scan (hanya di beberapa browser Android)
+                if (navigator.vibrate) navigator.vibrate(100);
+            });
+        }
+
+        function restartScanner() {
+            resultContainer.style.display = 'none';
+            startScanner();
+        }
+
+        // Jalankan saat halaman dibuka
+        window.addEventListener('load', startScanner);
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pengingat Keluarga</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-effect { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4">
+
+    <div id="formContainer" class="w-full max-w-md bg-white p-8 rounded-3xl shadow-2xl border border-slate-200 transition-all duration-300">
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-100 text-blue-600 rounded-full mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-800 tracking-tight">FORMULIR PENGINGAT</h2>
+            <p class="text-slate-500 text-sm font-medium mt-1">Jadwalkan pesan WhatsApp otomatis</p>
+        </div>
+        
+        <form id="dataForm" class="space-y-6">
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Jadwal Pengingat <span class="text-red-500">*</span></label>
+                <div class="flex gap-3">
+                    <input type="date" id="tanggal" required class="w-7/12 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-sm font-medium shadow-sm">
+                    <select id="waktu" required class="w-5/12 p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none text-sm font-medium shadow-sm cursor-pointer">
+                        <option value="" disabled selected>Jam</option>
+                        <option value="00:00">12 AM</option><option value="01:00">01 AM</option><option value="02:00">02 AM</option>
+                        <option value="03:00">03 AM</option><option value="04:00">04 AM</option><option value="05:00">05 AM</option>
+                        <option value="06:00">06 AM</option><option value="07:00">07 AM</option><option value="08:00">08 AM</option>
+                        <option value="09:00">09 AM</option><option value="10:00">10 AM</option><option value="11:00">11 AM</option>
+                        <option value="12:00">12 PM</option><option value="13:00">01 PM</option><option value="14:00">02 PM</option>
+                        <option value="15:00">03 PM</option><option value="16:00">04 PM</option><option value="17:00">05 PM</option>
+                        <option value="18:00">06 PM</option><option value="19:00">07 PM</option><option value="20:00">08 PM</option>
+                        <option value="21:00">09 PM</option><option value="22:00">10 PM</option><option value="23:00">11 PM</option>
+                    </select>
+                </div>
+                <p id="timeError" class="hidden text-red-600 text-[11px] mt-2 font-bold bg-red-50 p-2 rounded-lg border border-red-100 text-center animate-pulse">⚠️ Jadwal harus lebih dari jam sekarang!</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Perihal <span class="text-red-500">*</span></label>
+                <input type="text" id="perihal" required placeholder="Contoh: Beli Tiket" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-sm shadow-sm">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Pesan</label>
+                <textarea id="pesan" rows="3" placeholder="Isi detail pengingat..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-sm shadow-sm"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-widest mb-2 ml-1">Kirim Ke <span class="text-red-500">*</span></label>
+                <select id="penerima" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none text-sm font-medium shadow-sm cursor-pointer">
+                    <option value="" disabled selected>Pilih Penerima</option>
+                    <option value="6282178609889-1478937044@g.us">Keluarga</option>
+                    <option value="628114340889-1490322038@g.us">Jerry & Siska</option>
+                    <option value="628118955508">Linda</option>
+                </select>
+            </div>
+
+            <div id="statusMessage" class="hidden text-sm p-3 rounded-xl border text-center font-bold"></div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-2xl transition-all duration-200 uppercase tracking-widest shadow-lg shadow-blue-200 active:scale-[0.98]">
+                Simpan Pengingat
+            </button>
+        </form>
+    </div>
+
+    <div id="successModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform transition-all animate-bounce-short">
+            <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-800 mb-2">PENGINGAT DISIMPAN!</h3>
+            <p class="text-slate-500 text-sm mb-8 leading-relaxed">Jadwal pengingat Anda telah berhasil masuk ke sistem.</p>
+            <button id="resetBtn" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-2xl transition-all shadow-md active:scale-[0.98] uppercase tracking-widest text-xs">
+                Buat Pengingat Baru
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxnP-j6B2TuditjDrezSQSObwhzeXttDBydQPLUTKSpIVRh0oSzRLQvRdv5KfCSS74A/exec'; 
+        const form = document.getElementById('dataForm');
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMessage');
+        const timeError = document.getElementById('timeError');
+        const modal = document.getElementById('successModal');
+        const resetBtn = document.getElementById('resetBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            const inputDate = document.getElementById('tanggal').value;
+            const selectWaktu = document.getElementById('waktu');
+            const selectPenerima = document.getElementById('penerima');
+            const waktu24 = selectWaktu.value; 
+
+            const body = {
+                tanggal: inputDate,
+                waktu_24: waktu24,
+                perihal: document.getElementById('perihal').value,
+                pesan: document.getElementById('pesan').value,
+                penerima_nama: selectPenerima.options[selectPenerima.selectedIndex].text,
+                penerima_id: selectPenerima.value
+            };
+
+            const selectedDateTime = new Date(`${inputDate}T${waktu24}`);
+            if (selectedDateTime <= new Date()) {
+                timeError.classList.remove('hidden');
+                return;
+            }
+            timeError.classList.add('hidden');
+
+            // Visual Loading
+            btn.disabled = true;
+            btn.innerText = 'SEDANG MENYIMPAN...';
+            btn.classList.add('opacity-70', 'cursor-not-allowed');
+
+            fetch(scriptURL, { 
+                method: 'POST', 
+                body: JSON.stringify(body)
+            })
+            .then(res => res.json())
+            .then(res => {
+                if(res.result === 'success') {
+                    // Tampilkan Modal Sukses
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                    form.reset();
+                }
+            })
+            .catch(() => {
+                btn.disabled = false;
+                btn.innerText = 'COBA LAGI';
+                btn.classList.remove('opacity-70', 'cursor-not-allowed');
+                status.innerText = '❌ Gagal Terhubung';
+                status.className = 'text-red-700 bg-red-50 border border-red-200 p-3 rounded-xl block mt-4 text-center font-bold';
+                status.classList.remove('hidden');
+            });
+        });
+
+        // Event listener untuk tombol "Isi Baru" di Modal
+        resetBtn.addEventListener('click', () => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            status.classList.add('hidden');
+            btn.disabled = false;
+            btn.innerText = 'SIMPAN PENGINGAT';
+            btn.classList.remove('opacity-70', 'cursor-not-allowed', 'hidden');
+        });
+    </script>
+</body>
+</html>
